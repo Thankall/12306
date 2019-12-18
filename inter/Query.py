@@ -14,9 +14,9 @@ class query:
     查询接口
     """
 
-    def __init__(self, session, from_station, to_station, from_station_h, to_station_h, _station_seat, station_trains,
+    def __init__(self, selectObj, from_station, to_station, from_station_h, to_station_h, _station_seat, station_trains,
                  ticke_peoples_num, station_dates=None, ):
-        self.session = session
+        self.session = selectObj
         self.httpClint = HTTPClient(TickerConfig.IS_PROXY)
         self.httpClint.set_cookies(self.session.cookies)
         self.urls = urlConf.urls
@@ -63,9 +63,8 @@ class query:
         查询
         :return:
         """
-        if TickerConfig.IS_CDN == 1:
-            if self.session.cdn_list:
-                self.httpClint.cdn = self.session.cdn_list[random.randint(0, len(self.session.cdn_list) - 1)]
+        if TickerConfig.IS_CDN == 1 and self.session.cdn_list:
+            self.httpClint.cdn = self.session.cdn_list[random.randint(0, len(self.session.cdn_list) - 1)]
         for station_date in self.station_dates:
             select_url = copy.copy(self.urls["select_url"])
             select_url["req_url"] = select_url["req_url"].format(station_date, self.from_station, self.to_station,
